@@ -1,0 +1,12 @@
+# Environment
+*.env.local
+*.env
+
+# Complimentary files
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+
+# Metadata for mac
+.DS_Store
