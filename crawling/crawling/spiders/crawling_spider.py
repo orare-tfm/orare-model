@@ -45,7 +45,7 @@ class CrawlingSpider(CrawlSpider):
 class CrawlingSpider(CrawlSpider):
     name = "mycrawler_events" # Name of the spider
     allowed_domains = ["catalunyareligio.cat"] # Allowed domains
-    start_urls = [#"https://www.catalunyareligio.cat/ca/agenda?page=0",
+    start_urls = ["https://www.catalunyareligio.cat/ca/agenda?page=0",
                   "https://www.catalunyareligio.cat/ca/agenda?page=1",
                   "https://www.catalunyareligio.cat/ca/agenda?page=2",
                   "https://www.catalunyareligio.cat/ca/agenda?page=3",
