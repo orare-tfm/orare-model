@@ -1,38 +1,42 @@
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.selector import Selector
+import re
 
 class CrawlingSpider(CrawlSpider):
     name = "mycrawler" # Name of the spider
     allowed_domains = ["esglesia.barcelona"] # Allowed domains
-    start_urls = ["https://esglesia.barcelona/es/parroquia/"] # Starting URL
+    start_urls = ["https://esglesia.barcelona/es/parroquia/",
+                  "https://esglesia.barcelona/es/parroquies/catedral-basilica-de-barcelona/"] # Starting URL
 
     rules = (
         Rule(LinkExtractor(allow="es/parroquies"), callback="parse_item", follow=True),
     )
 
     def parse_item(self, response):
-        js = {} # JSON object
-        # Extract title
-        js["parroquia"] = response.css(".parish__title::text").get().strip()
-        # Información general de la parroquia
-        item1 = response.css(".parish__dl").getall()
-        sel = Selector(text=item1[0])
-        direccion =  sel.xpath('//dt[text()="Dirección"]/following-sibling::dd[1]/text()').get().strip()
-        codigo_postal_city = sel.xpath('//dt[text()="Dirección"]/following-sibling::dd[2]/text()').get().strip()
-        telefono = sel.xpath('//dt[text()="Teléfono"]/following-sibling::dd[1]/text()').get().strip()
-        # Extract Web
-        try:
-            web = sel.xpath('//dt[text()="Web"]/following-sibling::dd[1]/a/text()').get().strip()
-        except:
-            web = ""
-        # Process extracted data
-        codigo_postal, city = codigo_postal_city.split(maxsplit=1)
-        js["direccion"] = direccion
-        js["codigo_postal"] = codigo_postal
-        js["city"] = city
-        js["telefono"] = telefono
-        js["web"] = web
+        parroquia = response.css(".parish__title::text").get().strip()
+        address1 = response.xpath("//dt[text()='Dirección']/following-sibling::dd[1]/text()").getall()
+        address2 = response.xpath("//dt[text()='Dirección']/following-sibling::dd[2]/text()").getall()
+        address = address1 + [","] + address2
+        address = ' '.join([i.strip() for i in address])
+        telephone = response.xpath("//dt[text()='Teléfono']/following-sibling::dd[1]/text()").get()
+        email = response.xpath("//dt[text()='Correo electrónico']/following-sibling::dd[1]/a/text()").get()
+        website = response.xpath("//dt[text()='Web']/following-sibling::dd[1]/a/@href").get()
+        # Use regex to find the postal code
+        postal_code = None
+        match = re.search(r'\b\d{5}\b', address)
+        if match:
+            postal_code = match.group()
+        
+        js = {
+            'parroquia': parroquia,
+            'address': address,
+            'postal_code': postal_code,
+            'telephone': telephone,
+            'email': email,
+            'website': website
+        }
+
         # Horarios de misas, descripción, actividades...
         items2 = response.css(".accordion-item").getall() 
         for item in items2:
@@ -133,4 +137,5 @@ class CrawlingSpider(CrawlSpider):
                 'description': description,
                 'url': response.url
             }
+
 
