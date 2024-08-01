@@ -101,6 +101,36 @@ class CrawlingSpider(CrawlSpider):
                 'url': response.url
             }
 
+class CrawlingSpider(CrawlSpider):
+    name = "mycrawler_events_2" # Name of the spider
+    allowed_domains = ["catalunyacristiana.cat"] # Allowed domains
+    start_urls = ["https://www.catalunyacristiana.cat/agenda"]
 
+    rules = (
+        Rule(LinkExtractor(allow="agenda"), callback="parse_item", follow=True),
+    )
 
+    def parse_item(self, response):
+        title = response.css("div.col-md-4 h3::text").get()
+        date = response.xpath(".//b[text()='Data:']/following-sibling::text()[1]").get(default='').strip()
+        hour = response.xpath(".//b[text()='Hora:']/following-sibling::text()[1]").get(default='').strip()
+        location = response.xpath(".//b[text()='Lloc:']/following-sibling::text()[1]").get(default='').strip()
+        municipality = response.xpath(".//b[text()='Municipi:']/following-sibling::text()[1]").get(default='').strip()
+        theme = response.xpath(".//b[text()='Temàtica:']/following-sibling::text()[1]").get(default='').strip()
+        text_nodes = response.xpath("//div[contains(@class, 'entry-content')]/p//text()").getall()
+        description = ' '.join([text.strip() for text in text_nodes if text.strip()])
+
+        yield {
+                'title': title.strip(),
+                'date': date,
+                'hour': hour,
+                'location': location,
+                'address': location,
+                'municipality': municipality,
+                'organizer': location,
+                'diocesis': "",
+                'theme': theme,
+                'description': description,
+                'url': response.url
+            }
 
