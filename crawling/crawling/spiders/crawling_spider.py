@@ -66,36 +66,41 @@ class CrawlingSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
-        js = {} # JSON object
-        
         title = response.css(".col.my-3.in-node-body span::text").get() # Title event
-        js["title"] = title
-        event_date_label = response.css(".field__label::text").get() # Data de l'esdeveniment:
-        event_date = response.css(".field__item time::attr(datetime)").get() # Event date
-        js[event_date_label] = event_date
-        event_loc_label = response.css(".field__label::text").getall()[1] # Nom del lloc:
-        loc = response.css('.field--name-field-nom-del-lloc .field__item::text').get() # Location
-        js[event_loc_label] = loc
-        direction_label = response.css(".field__label::text").getall()[2] # Adreça (carrer i número)
-        direction = response.css('.field--name-field-direccio .field__item::text').get() # Location
-        js[direction_label] = direction
-        municipi_label = response.css(".field__label::text").getall()[3] # Municipi
-        municipi = response.css('.field--name-field-municipi .field__item::text').get() # Municipi
-        js[municipi_label] = municipi
-        diocesis_label = response.css(".field__label::text").getall()[4] #"Diòcesi on es realitza l'esdeveniment"
-        diocesis = response.css('.field--name-field-territori a::text').get() # diocesis
-        js[diocesis_label] = diocesis
-        tematica_label = response.css(".field__label::text").getall()[5] # Temática
+        date = response.xpath(".//div[contains(@class, 'field--name-field-event-date')]//time/@datetime").get()
+        location = response.xpath(".//div[contains(@class, 'field--name-field-nom-del-lloc')]//div[@class='field__item']/text()").get()
+        address = response.xpath(".//div[contains(@class, 'field--name-field-direccio')]//div[@class='field__item']/text()").get()
+        municipality =  response.xpath(".//div[contains(@class, 'field--name-field-municipi')]//div[@class='field__item']/text()").get()
+        organizer = response.xpath(".//div[contains(@class, 'field--name-field-nom-de-l-organitzador')]//div[@class='field__item']/text()").get()
+        diocesis = response.css('.field--name-field-territori a::text').get()
         tematica = response.css('.field--name-field-seccio .field__items a::text').getall() # Temática value
         combined_text = ' '.join([item.strip() for item in tematica])
-        js[tematica_label] = combined_text
-        tipus_label = response.css('div.field--name-field-tipus-esdeveniment div.field__item a::text').get() # Tipus d'esdeveniment
-        js["Description_typo"] = tipus_label
-        description = response.css('div.field--name-field-resum-esdeveniment ::text').get()
-        body_paragraphs =response.css('.card-body.fieldset-wrapper p::text').getall()
-        full_text = [description.strip()] if description else []
-        full_text.extend([p.strip() for p in body_paragraphs if p.strip()])
-        comb_text = ' '.join(full_text)
-        js["Description"] = comb_text
 
-        yield js
+        title_description = response.css('div.field--name-field-tipus-esdeveniment div.field__item a::text').get()
+
+        summary = response.xpath(".//div[contains(@class, 'field--name-field-resum-esdeveniment')]//text()").getall()
+        summary_text = ' '.join([text.strip() for text in summary if text.strip()])
+
+        # Extract the body text, including links
+        body = response.xpath(".//div[contains(@class, 'field--name-body')]//p//text() | .//div[contains(@class, 'field--name-body')]//p//a/text()").getall()
+        body_text = ' '.join([text.strip() for text in body if text.strip()])
+        # Combine the text from summary and body
+        combined_text_2 = f"{summary_text} {body_text}"
+
+        yield {
+                'title': title.strip(),
+                'date': date,
+                'location': location,
+                'address': address,
+                'municipality': municipality,
+                'organizer': organizer,
+                'diocesis': diocesis,
+                'theme': combined_text,
+                'title_description': title_description,
+                'description': combined_text_2,
+                'url': response.url
+            }
+
+
+
+
