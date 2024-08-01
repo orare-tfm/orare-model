@@ -88,7 +88,7 @@ class CrawlingSpider(CrawlSpider):
         combined_text_2 = f"{summary_text} {body_text}"
 
         yield {
-                'title': title.strip(),
+                'title': title,
                 'date': date,
                 'location': location,
                 'address': address,
