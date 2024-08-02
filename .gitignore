@@ -10,3 +10,5 @@
 
 # Metadata for mac
 .DS_Store
+
+venv/
