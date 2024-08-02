@@ -3,7 +3,7 @@ from scrapy.linkextractors import LinkExtractor
 from scrapy.selector import Selector
 import re
 
-class CrawlingSpider(CrawlSpider):
+class CrawlingSpider1(CrawlSpider):
     name = "mycrawler" # Name of the spider
     allowed_domains = ["esglesia.barcelona"] # Allowed domains
     start_urls = ["https://esglesia.barcelona/es/parroquia/",
@@ -46,7 +46,7 @@ class CrawlingSpider(CrawlSpider):
             js[t] = vec
         yield js
 
-class CrawlingSpider(CrawlSpider):
+class CrawlingSpider2(CrawlSpider):
     name = "mycrawler_events" # Name of the spider
     allowed_domains = ["catalunyareligio.cat"] # Allowed domains
     start_urls = ["https://www.catalunyareligio.cat/ca/agenda?page=0",
@@ -105,7 +105,7 @@ class CrawlingSpider(CrawlSpider):
                 'url': response.url
             }
 
-class CrawlingSpider(CrawlSpider):
+class CrawlingSpider3(CrawlSpider):
     name = "mycrawler_events_2" # Name of the spider
     allowed_domains = ["catalunyacristiana.cat"] # Allowed domains
     start_urls = ["https://www.catalunyacristiana.cat/agenda"]
@@ -138,4 +138,19 @@ class CrawlingSpider(CrawlSpider):
                 'url': response.url
             }
 
+class CrawlingSpider4(CrawlSpider):
+    name = "mycrawler_postal_code" # Name of the spider
+    allowed_domains = ["idescat.cat"] # Allowed domains
+    start_urls = ["https://www.idescat.cat/codis/?id=50&n=9&lang=es"]
 
+    rules = (
+        Rule(LinkExtractor(allow=r'codis/\?id=50&n=9&c=\d+&lang=es'), callback="parse_item", follow=True),
+    )
+
+    def parse_item(self, response):
+        postal_codes = response.xpath('//div[h2[text()="Divisió territorial postal"]]//ul/li/text()').getall()
+        yield {
+                "url": response.url,
+                "postal_codes": postal_codes
+            }
+        
