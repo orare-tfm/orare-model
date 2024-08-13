@@ -11,4 +11,8 @@
 # Metadata for mac
 .DS_Store
 
+# Virtual environment
 venv/
+
+# Pycache
+**/__pycache__/
