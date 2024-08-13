@@ -91,3 +91,23 @@ ROBOTSTXT_OBEY = True
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+
+# settings.py
+DOWNLOAD_TIMEOUT = 15  # Increase to give more time for response
+RETRY_TIMES = 5  # Increase retries
+
+# settings.py
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+
+# settings.py
+DOWNLOADER_CLIENT_TLS_METHOD = 'TLSv1.2'
+
+# settings.py
+LOG_LEVEL = 'DEBUG'
+
+# settings.py
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 1,
+    # Add a proxy rotation library or service
+}

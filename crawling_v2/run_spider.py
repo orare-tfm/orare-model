@@ -17,7 +17,7 @@ def run_spiders():
     process = CrawlerProcess(settings)
 
     # Add each spider to the process by their class
-    process.crawl(CrawlingSpider4)
+    process.crawl(CrawlingSpider2)
 
     # Start the crawling process
     process.start()
