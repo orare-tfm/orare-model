@@ -2,6 +2,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.selector import Selector
 import re
+from datetime import datetime
 
 class CrawlingSpider1(CrawlSpider):
     name = "mycrawler" # Name of the spider
@@ -72,6 +73,13 @@ class CrawlingSpider2(CrawlSpider):
     def parse_item(self, response):
         title = response.css(".col.my-3.in-node-body span::text").get() # Title event
         date = response.xpath(".//div[contains(@class, 'field--name-field-event-date')]//time/@datetime").get()
+        # Parse the datetime string into a datetime object
+        datetime_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+
+        # Format the datetime object to only display the date in "YYYY/MM/DD" format
+        date = datetime_obj.strftime("%d/%m/%Y")
+        full_date = response.xpath(".//div[contains(@class, 'field--name-field-event-date')]//time/text()").get()
+        hour = full_date.split(" - ")[-1]
         location = response.xpath(".//div[contains(@class, 'field--name-field-nom-del-lloc')]//div[@class='field__item']/text()").get()
         address = response.xpath(".//div[contains(@class, 'field--name-field-direccio')]//div[@class='field__item']/text()").get()
         municipality =  response.xpath(".//div[contains(@class, 'field--name-field-municipi')]//div[@class='field__item']/text()").get()
@@ -94,6 +102,7 @@ class CrawlingSpider2(CrawlSpider):
         yield {
                 'title': title,
                 'date': date,
+                'hour': hour,
                 'location': location,
                 'address': address,
                 'municipality': municipality,
@@ -123,6 +132,7 @@ class CrawlingSpider3(CrawlSpider):
         theme = response.xpath(".//b[text()='Temàtica:']/following-sibling::text()[1]").get(default='').strip()
         text_nodes = response.xpath("//div[contains(@class, 'entry-content')]/p//text()").getall()
         description = ' '.join([text.strip() for text in text_nodes if text.strip()])
+        image = response.xpath('//div[@class="col-md-12"]//div[@class="newsmag-image"]//img[contains(@src, ".jpg")]/@src').get()
 
         yield {
                 'title': title.strip(),
@@ -135,6 +145,7 @@ class CrawlingSpider3(CrawlSpider):
                 'diocesis': "",
                 'theme': theme,
                 'description': description,
+                'image': image,
                 'url': response.url
             }
 
