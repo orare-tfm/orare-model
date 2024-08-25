@@ -4027,10 +4027,12 @@
         ]
     },
     {
-        "pasaje": NaN,
-        "texto": NaN,
+        "pasaje": "Marcos 10:12",
+        "texto": "Y si la mujer repudiare á su marido y se casare con otro, comete adulterio.",
         "texto_cat": "y si una mujer se divorcia de su marido y se casa con otro, también comete adulterio».",
-        "area_vida": NaN
+        "area_vida": [
+            "matrimonio y el sexo"
+        ]
     },
     {
         "pasaje": "Marcos 10:12",
@@ -4580,10 +4582,12 @@
         ]
     },
     {
-        "pasaje": NaN,
-        "texto": NaN,
+        "pasaje": "Nehemías 4:14",
+        "texto": "Después miré, y levantéme, y dije á los principales y á los magistrados, y al resto del pueblo: No temáis delante de ellos: acordaos del Seños grande y terrible, y pelead por vuestros hermanos, por vuestros hijos y por vuestras hijas, por vuestras mujeres y por vuestras casas.",
         "texto_cat": "Allí donde oigan el sonido del cuerno, corran a reunirse con nosotros: nuestro Dios combatirá a favor nuestro».",
-        "area_vida": NaN
+        "area_vida": [
+            "disciplina/niños"
+        ]
     },
     {
         "pasaje": "Nahum 1:7",
@@ -5090,7 +5094,7 @@
     {
         "pasaje": "Proverbios 6:32",
         "texto": "Mas el que comete adulterio con la mujer, es falto de entendimiento: Corrompe su alma el que tal hace.",
-        "texto_cat": "¿Y quiénes predicarán, si no se los envía? Como dice la Escritura: ¡Qué hermosos son los pasos de los que anuncian buenas noticias!",
+        "texto_cat": "¿Y quiénes predicarán, si no se los envía? Como dice la Escritura: \"¡Qué hermosos son los pasos de los que anuncian buenas noticias!\"",
         "area_vida": [
             "matrimonio y el sexo"
         ]
